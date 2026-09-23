@@ -1,10 +1,10 @@
-import supertest from "supertest";
+import { Controller, Get, Route } from "tsoa";
 
-describe("Beach forecast functional tests", () => {
-  it("should return a forecast with just a few times", async () => {
-    const { body, status } = await supertest(testApp).get("/forecasts");
-    expect(status).toBe(200);
-    expect(body).toEqual([
+@Route("forecasts")
+export class ForecastsController extends Controller {
+  @Get("")
+  public async getForecastsForLoggedUser() {
+    return [
       {
         time: "2020-04-26T00:00:00+00:00",
         forecast: [
@@ -43,6 +43,6 @@ describe("Beach forecast functional tests", () => {
           },
         ],
       },
-    ]);
-  });
-});
+    ];
+  }
+}

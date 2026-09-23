@@ -4,9 +4,10 @@
     "target": "ES2022",
     "module": "commonjs",
     "moduleResolution": "node",
+    "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "lib": ["ES2022"],
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "dist",
     "types": ["node"],
     "strict": true,
@@ -15,12 +16,8 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "removeComments": true,
-    "baseUrl": ".",
-    "paths": {
-      "@src/*": ["src/*"],
-      "@test/*": ["test/*"]
-    }
+    "baseUrl": "."
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "build/**/*.ts"],
   "exclude": ["node_modules", "dist", "test"]
 }
