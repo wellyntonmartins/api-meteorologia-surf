@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
-    "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "5.0",
     "target": "ES2022",
-    "module": "CommonJS",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
     "lib": ["ES2022"],
     "rootDir": "src",
     "outDir": "dist",
     "types": ["node"],
     "strict": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "sourceMap": true,
