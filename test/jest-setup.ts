@@ -1,5 +1,5 @@
-import express, { type Express } from "express";
-import { RegisterRoutes } from "../build/routes";
+import express, { type Express } from 'express';
+import { RegisterRoutes } from '../build/routes';
 
 declare global {
   var testApp: Express;
