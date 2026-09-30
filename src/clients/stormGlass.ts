@@ -1,8 +1,11 @@
 import { AxiosStatic } from 'axios';
 
+// Cria-se essa interface para definir um tipo reutilizavel facilmente em outros lugares
 export interface StormGlassPointSource {
   [key: string]: number;
 }
+
+// Outra interface para atribuir os tipos das variaveis que vao ser referenciadas em @StormGlassForecastResponse
 export interface StormGlassPoint {
   readonly time: string;
   readonly waveHeight: StormGlassPointSource;
@@ -13,10 +16,13 @@ export interface StormGlassPoint {
   readonly windDirection: StormGlassPointSource;
   readonly windSpeed: StormGlassPointSource;
 }
+
+// Interface que consome e atribui as variaveis de StormGlassPoint para o atributo especifico de "hours"
 export interface StormGlassForecastsResponse {
   hours: StormGlassPoint[];
 }
 
+// Interface para ser usada como validacao dos dados da API externa
 export interface ForecastPoint {
   swellDirection: number;
   swellHeight: number;
@@ -28,16 +34,19 @@ export interface ForecastPoint {
   windSpeed: number;
 }
 
+// Classe que gerencia os dados da API
 export class StormGlass {
   constructor(protected request: AxiosStatic) {}
 
+  // Parametros para fazer uma requisicao especifica na API externa
   readonly stormGlassApiParams =
-    'swellDirection%2CswellHeight%2CswellPeriod%2CwaveDirection%2CwaveHeight%2CwindDirection%2CwindSpeed';
+    'swellDirection,swellHeight,swellPeriod,waveDirection,waveHeight,windDirection,windSpeed';
   readonly stormGlassApiSource = 'noaa';
 
+  // Funcao que resgata os dados da API
   public async fetchPoints(lat: number, lng: number): Promise<ForecastPoint[]> {
     const response = await this.request.get<StormGlassForecastsResponse>(
-      `https://api.stormglass.io/v2/weather/point?params=${this.stormGlassApiParams}&source=${this.stormGlassApiSource}&lat=${lat}.7984&lng=${lng}`,
+      `https://api.stormglass.io/v2/weather/point?params=${this.stormGlassApiParams}&source=${this.stormGlassApiSource}&end=1592113802&lat=${lat}&lng=${lng}`,
       {
         params: {
           Authorization:
@@ -46,12 +55,15 @@ export class StormGlass {
       }
     );
 
+    // Retorna esses dados normalizados
     return this.normalizeResponse(response.data);
   }
 
+  // Normaliza os dados vindos da API (remove o que nao e necessario e padroniza-os)
   private normalizeResponse(
     points: StormGlassForecastsResponse
   ): ForecastPoint[] {
+    // Retorna apenas os dados validos e padronizados com seu conteudo atribuido ao seu nome, e nao terceirizado pelo sub-parametro comum 'noaa'
     return points.hours.filter(this.isValidPoint.bind(this)).map((point) => ({
       swellDirection: point.swellDirection[this.stormGlassApiSource],
       swellHeight: point.swellHeight[this.stormGlassApiSource],
@@ -64,6 +76,7 @@ export class StormGlass {
     }));
   }
 
+  // Verifica se os dados da API batem com os tipos de StormGlassPoint
   private isValidPoint(point: Partial<StormGlassPoint>): boolean {
     return !!(
       point.time &&
