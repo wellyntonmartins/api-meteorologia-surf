@@ -25,4 +25,26 @@ describe('StormGlass client', () => {
     // Realiza o teste para saber se os dados sao compativeis apos pegar os dados normalizados
     expect(response).toEqual(stormGlassNormalized3HoursFixture);
   });
+
+  it('should exclude imcomplete data points', async () => {
+    const lat = -33.792726;
+    const lng = 151.289824;
+    const incompleteResponse = {
+      hours: [
+        {
+          windDirection: {
+            noaa: 300,
+          },
+          time: '2020-04-26T00:00:00+00:00',
+        },
+      ],
+    };
+
+    axios.get = jest.fn().mockResolvedValue({ data: incompleteResponse });
+
+    const stormGlass = new StormGlass(axios);
+    const response = await stormGlass.fetchPoints(lat, lng);
+
+    expect(response).toEqual([]);
+  });
 });
